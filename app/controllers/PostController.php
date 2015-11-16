@@ -6,7 +6,7 @@ class PostController extends \BaseController
     public function index()
     {
         $post = Post::all();
-           return Response::json(array(
+        return Response::json(array(
             'post' => $post
         ));
     }
@@ -16,22 +16,22 @@ class PostController extends \BaseController
         $content = Input::all();
         $post = new Post();
 
-            foreach ($content['data'] as $obj) {
-                if ($post->validate($obj)) {
-                    Post::create(array(
-                        "title" => $obj['title'],
-                        "content" => $obj['content'],
-                    ));
+        foreach ($content['data'] as $obj) {
+            if ($post->validate($obj)) {
+                Post::create(array(
+                    "title" => $obj['title'],
+                    "content" => $obj['content'],
+                ));
 
 
-                }else{
-                    return Response::json(array(
-                        'error' => $post->errors()),
-                        500
-                    );
+            } else {
+                return Response::json(array(
+                    'error' => $post->errors()),
+                    500
+                );
 
-                }
             }
+        }
 
     }
 
@@ -65,13 +65,20 @@ class PostController extends \BaseController
     {
 
         $content = Input::all();
-        foreach($content['data'] as $object){
+        $post = new Post;
+        foreach ($content['data'] as $object) {
+            if ($post->validate($object)) {
+                $posts = Post::find($object['id']);
+                $posts->title = $object['title'];
+                $posts->content = $object['content'];
+                $posts->save();
 
-          $post = Post::find($object['id']);
-            $post->title = $object['title'];
-            $post->content = $object['content'];
-            $post->save();
-
+            } else {
+                return Response::json(array(
+                    'error' => $post->errors()),
+                    500
+                );
+            }
         }
 
         return Response::json(array('error' => false, 'msg' => 'post update'));
@@ -85,48 +92,19 @@ class PostController extends \BaseController
 
     public function destroy($id)
     {
-//        $post = Post::findOrFail($id);
-//        if (!$post) {
-//            return Response::json(array('error' => true), 500);
-//
-//        } else
-//            $post->delete();
-//        return Response::json(array(' error' => false, 'msg' => 'post deleted'), 200);
         $content = Input::all();
-        foreach($content['data'] as $object){
+        foreach ($content['data'] as $object) {
 
             $post = Post::find($object['id']);
-
             $post->delete();
 
         }
-
-        return Response::json(array('error' => false, 'msg' => 'post update'));
-
-
+        return Response::json(array('error' => false, 'msg' => 'post deleted'));
 
     }
 
-    public function custom()
-    {
-
-        $content = Input::all();
-        foreach ($content['data'] as $obj) {
-            foreach ($obj as $key => $val) {
-                print $key . ':' . $val . '<br/>';
-            }
-        }
-
-
-    }
+   
 }
-//{
-//    "data":[
-//    {"title" : "test" , "content":"content test"},
-//    {"title" : "test1" ,"content":"content test"}
-//
-//    ]
-//}
 
 //{"data":[{"title" : "test1" , "content":"content test"},{"title" : "test" , "content":"content test"}]}
 
