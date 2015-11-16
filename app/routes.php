@@ -17,3 +17,4 @@ Route::get('/', function () {
 });
 
 Route::resource('api/v1/post', 'PostController');
+Route::resource('test', 'PostController@custom');

@@ -2,6 +2,7 @@
 
 class Post extends Basemodel{
 
+    protected $fillable = array('title', 'content');
     protected $rules = array(
 
         'title' => 'required|max:255',
